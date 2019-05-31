@@ -70,21 +70,52 @@ router.get('/:id', validateUserId, (req, res) => {
 //---------------------------------------------------------------------------------//
 
 
-router.get('/:id/posts', (req, res) => {
+router.get('/:id/posts', validateUserId, (req, res) => {
+    const {id} = req.params; //user_id
 
+    dbPost.getById(id)
+    .then(posts => {
+        res.status(200).json(posts);
+    })
+    .catch(err => {
+        res.status(404).json({message: "Error grabbing posts!"})
+    })
 });
 
 //---------------------------------------------------------------------------------//
 
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', validateUserId, (req, res) => {
+    const {id} = req.params; //user_id
 
+    db.remove(id)
+    .then(record => {
+        res.status(200).json({message: "Delete SUCCESSFUL!", record});
+    })
+    .catch(err => {
+        res.status(400).json({message: "ERROR in DELETING."});
+    })
 });
 
 //----------------------------------------------------------------------------------//
 
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validateUserId, validateUser, (req, res) => {
+    const {id} = req.params; //user_id
+
+    db.update(id, req.body)
+    .then(updateNum => {
+        db.getById(id)
+        .then(user => {
+            res.status(200).json(user);
+        })
+        .catch(err => {
+            res.status(404).json({message: "USER NOT FOUND"})
+        })
+    })
+    .catch(err => {
+        res.status(400).json({message: "Update Unsuccessful!"})
+    })
 
 });
 
@@ -112,7 +143,7 @@ function validateUserId(req, res, next) {
         })
 };
 
-// Checks if user have body or name field within body - next will follow else
+// Checks if user have body or name field within body - next will follow else USED FOR POST REQ
 function validateUser(req, res, next) {
     const body = req.body;
     const { name } = req.body;
@@ -128,7 +159,7 @@ function validateUser(req, res, next) {
     }
 };
 
-// Checks if post have body or text field within body - next will follow else
+// Checks if post have body or text field within body - next will follow else USED FOR POST REQ
 function validatePost(req, res, next) {
     const body = req.body;
     const { text } = req.body;
