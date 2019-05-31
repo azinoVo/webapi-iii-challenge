@@ -19,7 +19,7 @@ router.post('/', validateUser, (req, res) => {
 
 //---------------------------------------------------------------------------------//
 
-router.post('/:id/posts', validateUserId, (req, res) => {
+router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
     console.log("within POST");
     const {id} = req.params;
     const {text} = req.body;
