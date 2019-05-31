@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+// These are extensions of main route /api/posts
+
 router.get('/', (req, res) => {
     res.send('GET SUCCESS!')
 });
