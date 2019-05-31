@@ -1,9 +1,8 @@
-const express = 'express';
-
+const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-
+    res.send('GET SUCCESS!')
 });
 
 router.get('/:id', (req, res) => {
